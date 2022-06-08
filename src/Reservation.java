@@ -12,8 +12,6 @@ public class Reservation
 	public Reservation() throws IOException {
 	// TODO Auto-generated constructor stub
 	System.out.println("영화 예약 사이트입니다");
-	System.out.println("");
-	System.out.println("");
 	ReservMenu rm = new ReservMenu();
 	}
 }
@@ -97,27 +95,49 @@ class ReservMovie extends MovieList implements KeyboardIn
 		}
 		selNo=selNo - 1;
 		// 좌석 배치도 및 선택 루틴 설정
+		String seat;
+
+		SC.nextLine();  // nextInt에서 남은 엔터 값을 해소하기 위함
 		while(true) {
 			System.out.println("스크린 좌석 배치도");
-			System.out.println("A-1   A-2   A-3   A-4   A-5   A-6");
-			System.out.println("B-1   B-2   B-3   B-4   B-5   B-6");
-			System.out.println("C-1   C-2   C-3   C-4   C-5   C-6");
-			System.out.println("D-1   D-2   D-3   D-4   D-5   D-6");
-			System.out.println("E-1   E-2   E-3   E-4   E-5   E-6");
-			System.out.println("F-1   F-2   F-3   F-4   F-5   F-6");
-			System.out.println("G-1   G-2   G-3   G-4   G-5   G-6");
-			System.out.println("H-1   H-2   H-3   H-4   H-5   H-6");
-			System.out.println("예매할 좌석 번호를 입력하세요:");
-			SC.nextLine();
+//			System.out.println("A-1   A-2   A-3   A-4   A-5   A-6");
+//			System.out.println("B-1   B-2   B-3   B-4   B-5   B-6");
+//			System.out.println("C-1   C-2   C-3   C-4   C-5   C-6");
+//			System.out.println("D-1   D-2   D-3   D-4   D-5   D-6");
+//			System.out.println("E-1   E-2   E-3   E-4   E-5   E-6");
+//			System.out.println("F-1   F-2   F-3   F-4   F-5   F-6");
+//			System.out.println("G-1   G-2   G-3   G-4   G-5   G-6");
+//			System.out.println("H-1   H-2   H-3   H-4   H-5   H-6");
+			for (int i=0; i<seats.length;i++) {
+				for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
+					seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
+					if (seats[i][k]==true) {
+						System.out.print(" X \t");
+					}
+					else {
+						System.out.print(seat+"\t");
+					}
+		
+				}
+				System.out.println();
+			}
+			System.out.print("예매할 좌석 번호를 입력하세요:");
 			seatNo = SC.nextLine().toUpperCase();  // 입력받은 좌석번호의 대문자 변환
 			if (seatNo.length() != 3 || seatNo.charAt(1) != '-') {
-				System.out.println("좌석번호를 잘못 선택했습니다.");
+				System.out.println("좌석번호를 잘못 선택했습니다.\n엔터키를 치세요.");
+				SC.nextLine();   // 잠시 멈춤.
 				continue;
 			}
 			seatF=seatNo.charAt(0);
 			seatL=seatNo.charAt(2);
 			if (seatF<'A' || seatF>'H' || seatL<'1' || seatL>'6') {
-				System.out.println("열과 행의 번호가 잘못되었습니다.");
+				System.out.println("열과 행의 번호가 잘못되었습니다.\n엔터키를 치세요.");
+				SC.nextLine();   // 잠시 멈춤.
+				continue;
+			}
+			if (seats[seatF-65][seatL-49]==true) {
+				System.out.println("이미 예약된 좌석입니다.\n엔터키를 치세요.");
+				SC.nextLine();   // 잠시 멈춤.
 				continue;
 			}
 			else {
