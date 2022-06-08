@@ -12,12 +12,15 @@ public class MainApp implements KeyboardIn {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		
+		Seats ss = new Seats();
+		ss.SeatList(false);
 		//Scanner sc = new Scanner(System.in);
 		System.out.println("관리자라면 비밀번호(1234)를 입력하세요:");
 		int pw = SC.nextInt();
 		if (pw==1234) {
 			System.out.println("관리자 로그인 성공!");
 			AdminMenu am = new AdminMenu();
+			am.AdminMenuProcess();
 		}
 		else {   // 관리자가 아니라면 일반 이용자로 간주
 			System.out.println("영화 예매 사이트 입장합니다.");
@@ -31,6 +34,55 @@ public class MainApp implements KeyboardIn {
 interface KeyboardIn
 {
 	Scanner SC = new Scanner(System.in);
+	boolean[][] seats = new boolean[8][6];  // 좌석 정보는 모두 여기에
+}
+
+class Seats implements KeyboardIn
+{
+	protected String reservName="src/reservations.txt";
+	protected File file;
+	protected boolean view;
+	
+	public Seats()
+	{
+		//this.view=view;
+	}
+	public void SeatList(boolean view) throws IOException
+	{
+		file = new File(reservName);
+		if (!file.exists()) {
+			System.out.println("예매 파일이 존재하지 않습니다.");
+			return;
+		}	
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String str;
+		String[] str1;
+		int row, col;
+		while ((str=br.readLine()) != null) {
+			str1 = str.split(",");
+			row=str1[3].charAt(0);
+			col=str1[3].charAt(2);
+			seats[row-65][col-49]=true;   // 'A'는 65이므로 65를 빼서 0으로 행값 입력, "1"은 49이므로 49를 빼서 0으로 열값 입력
+		}
+		br.close();   // 파일 닫기
+		
+		if (view==true) {  // 호출 시 true값이면 좌석 배치 현황 출력
+			String seat;
+			for (int i=0; i<seats.length;i++) {
+				for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
+					seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
+					if (seats[i][k]==true) {
+						System.out.print(" X \t");
+					}
+					else {
+						System.out.print(seat+"\t");
+					}
+		
+				}
+				System.out.println();
+			}
+		}  // view=true일 때
+	}
 }
 
 class FileWrite
@@ -58,7 +110,7 @@ class AdminMenu implements KeyboardIn
 	private boolean exit=false;
 	//Scanner sc = new Scanner(System.in);
 	
-	public AdminMenu() throws IOException
+	public void AdminMenuProcess() throws IOException
 	{
 		System.out.println("=====================================");
 		System.out.println("==========영화 정보 관리자 메뉴============");
@@ -104,7 +156,6 @@ class AdminMenu implements KeyboardIn
 			System.out.println("항목을 잘못 선택했습니다.");
 		}
 	}
-	
 
 }   // class AdminMenu
 
