@@ -12,6 +12,7 @@ public class Reservation
 	public Reservation() throws IOException {
 	// TODO Auto-generated constructor stub
 	System.out.println("영화 예약 사이트입니다");
+	System.out.println("");
 	ReservMenu rm = new ReservMenu();
 	}
 }
