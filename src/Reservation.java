@@ -80,6 +80,7 @@ class ReservMovie extends MovieList implements KeyboardIn
 	String selStamp;   // 예매한 영화 고유번호
 	String selTitle;   // 예매한 영화 제목
 	String timeStamp;  // 영화 예매 고유번호
+	Seats ss = new Seats();
 	
 	public ReservMovie() throws IOException {
 	// TODO Auto-generated constructor stub
@@ -89,6 +90,7 @@ class ReservMovie extends MovieList implements KeyboardIn
 		String[] str1;
 		System.out.println("예매할 영화 번호를 입력하세요:");
 		selNo = SC.nextInt();
+		SC.nextLine();  // nextInt에서 남은 엔터 값을 해소하기 위함
 		if (selNo<1 || selNo>no) {
 			System.out.println("예매할 영화 번호를 잘못 입력했습니다.");
 			return;
@@ -97,7 +99,6 @@ class ReservMovie extends MovieList implements KeyboardIn
 		// 좌석 배치도 및 선택 루틴 설정
 		String seat;
 
-		SC.nextLine();  // nextInt에서 남은 엔터 값을 해소하기 위함
 		while(true) {
 			System.out.println("스크린 좌석 배치도");
 //			System.out.println("A-1   A-2   A-3   A-4   A-5   A-6");
@@ -155,6 +156,7 @@ class ReservMovie extends MovieList implements KeyboardIn
 		System.out.println("예매가 완료되었습니다!");
 		System.out.println("예매번호: "+timeStamp+", 영화번호: "+selStamp+", 영화제목: "+selTitle+", 좌석번호: "+seatNo);
 		System.out.println();
+		ss.SeatList(false);    // 예약 파일(reservations.txt)에 새로 저장된 예약 좌석을 Seats배열에 반영.
 	}
 }
 
@@ -253,6 +255,8 @@ class ReservView extends ReservList implements KeyboardIn
 
 class ReservCancel extends ReservList implements KeyboardIn
 {
+	Seats ss = new Seats();
+	
 	ReservCancel() throws IOException
 	{
 		String[] str1;
@@ -276,6 +280,7 @@ class ReservCancel extends ReservList implements KeyboardIn
 				//System.out.println(alRes.get(i));
 			}
 			System.out.println("예매를 취소하였습니다!");
+			Seats ss = new Seats();   // 예약 파일(reservations.txt)에서 삭제한 좌석 내용을 Seats배열에 반영.
 		}
 		else {
 			System.out.println("예매 취소에 실패하였습니다.");
