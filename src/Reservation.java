@@ -5,28 +5,29 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-//import java.util.Scanner;
+//import java.util.Scanner;  // MainApp.java의 KeyboardIn interface 구현으로 충분
 
 public class Reservation
 {
 	public Reservation() throws IOException {
 	// TODO Auto-generated constructor stub
-	System.out.println("영화 예약 사이트입니다");
-	System.out.println("");
-	ReservMenu rm = new ReservMenu();
+		System.out.println("영화 예약 사이트입니다");
+		System.out.println("");
+		ReservMain rm = new ReservMain();
+		rm.ReservMenu();
 	}
 }
 
-class ReservMenu implements KeyboardIn
+class ReservMain extends ReservList implements KeyboardIn
 {
 	private int menu;
 	private boolean exit=false;
 	//Scanner sc = new Scanner(System.in);
 	
-	public ReservMenu() throws IOException
+	public void ReservMenu() throws IOException
 	{
 		System.out.println("=====================================");
-		System.out.println("=========영화 예약/확인/취소 메뉴===========");
+		System.out.println("=========영화 예약/확인/취소 메뉴=========");
 		System.out.println("=====================================");
 		
 		while(true)
@@ -46,6 +47,7 @@ class ReservMenu implements KeyboardIn
 	{
 		System.out.println("이용할 항목을 선택하세요. 1.영화 예매 2.예매 확인 3.예매 취소 5.종료");
 		menu = SC.nextInt();
+		SC.nextLine();  // 입력 버퍼 비우기 위함
 	}
 	
 	public void reservMenuExec() throws IOException
@@ -56,7 +58,9 @@ class ReservMenu implements KeyboardIn
 			ReservMovie rm = new ReservMovie();
 			break;
 		case 2:    // 예매 확인
-			ReservView rv = new ReservView();
+			System.out.println("확인할 예매번호를 입력하세요.");
+			String rvNo=SC.nextLine();			
+			ReservList(rvNo);	// 예매 목록 확인하기	
 			break;
 		case 3:    // 예매 취소
 			ReservCancel rc = new ReservCancel();
@@ -81,17 +85,18 @@ class ReservMovie extends MovieList implements KeyboardIn
 	String selStamp;   // 예매한 영화 고유번호
 	String selTitle;   // 예매한 영화 제목
 	String timeStamp;  // 영화 예매 고유번호
-	Seats ss = new Seats();
+	//Seats ss = new Seats();
 	
 	public ReservMovie() throws IOException {
 	// TODO Auto-generated constructor stub
-		System.out.println("예매 프로그램에 들어옸습니다.");
-		MovieList();
-		
 		String[] str1;
+		System.out.println("예매 프로그램에 들어옸습니다.");
+		
+		MovieList();		
+		
 		System.out.println("예매할 영화 번호를 입력하세요:");
 		selNo = SC.nextInt();
-		SC.nextLine();  // nextInt에서 남은 엔터 값을 해소하기 위함
+		SC.nextLine();  // 입력 버퍼 비우기 위함. nextInt에서 남은 엔터 값을 해소.
 		if (selNo<1 || selNo>no) {
 			System.out.println("예매할 영화 번호를 잘못 입력했습니다.");
 			return;
@@ -99,7 +104,6 @@ class ReservMovie extends MovieList implements KeyboardIn
 		selNo=selNo - 1;
 		// 좌석 배치도 및 선택 루틴 설정
 		String seat;
-
 		while(true) {
 			System.out.println("스크린 좌석 배치도");
 //			System.out.println("A-1   A-2   A-3   A-4   A-5   A-6");
@@ -157,7 +161,14 @@ class ReservMovie extends MovieList implements KeyboardIn
 		System.out.println("예매가 완료되었습니다!");
 		System.out.println("예매번호: "+timeStamp+", 영화번호: "+selStamp+", 영화제목: "+selTitle+", 좌석번호: "+seatNo);
 		System.out.println();
-		ss.SeatList(false);    // 예약 파일(reservations.txt)에 새로 저장된 예약 좌석을 Seats배열에 반영.
+		
+		// 이하, 예약 좌석을 Seats 배열에 반영하기 위함. 영화 예약을 반복할 경우, 최근 변경 사항 즉시 반영.  
+		int row, col;
+		row=seatNo.charAt(0);
+		col=seatNo.charAt(2);
+		seats[row-65][col-49]=true;   //아래 명령줄 대체. 예약파일(reservation.txt에서 배열 다시 만들 필요없이 배열의 해당항목만 변경 
+		//ss.SeatList(false);    // 예약 파일(reservations.txt)에 새로 저장된 예약 좌석을 Seats배열에 반영.(이것 대신 사용해도 됨)
+		// 이상, 예약 좌석을 Seats 배열에 반영하기 위함.
 	}
 }
 
@@ -190,6 +201,9 @@ class ReservList
 	
 	public void ReservList(String rvNo) throws IOException
 	{
+		String str;
+		String[] str1;
+		
 		file = new File(reservName);
 		if (!file.exists()) {
 			System.out.println("예매 파일이 존재하지 않습니다.");
@@ -198,8 +212,6 @@ class ReservList
 
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		alRes = new ArrayList<String>();
-		String str;
-		String[] str1;
 		Rcheck=false;
 		no=0;
 		if (file.canRead() ) {
@@ -242,27 +254,14 @@ class ReservList
 	}
 }
 
-class ReservView extends ReservList implements KeyboardIn
-{
-	ReservView() throws IOException
-	{
-		System.out.println("확인할 예매번호를 입력하세요.");
-		SC.nextLine();
-		String rvNo=SC.nextLine();
-		
-		ReservList(rvNo);	// 예매 목록 확인하기	
-	}
-}
-
 class ReservCancel extends ReservList implements KeyboardIn
 {
-	Seats ss = new Seats();
+	int row, col;
 	
 	ReservCancel() throws IOException
 	{
 		String[] str1;
 		System.out.println("취소할 예매번호를 입력하세요.");
-		SC.nextLine();
 		String rcNo=SC.nextLine();
 		
 		ReservList(rcNo);	// 취소할 예매 번호 보기
@@ -274,6 +273,9 @@ class ReservCancel extends ReservList implements KeyboardIn
 			for (int i=0; i<alRes.size(); i++) {
 				str1 = alRes.get(i).split(",");
 				if (str1[0].equals(rcNo)==true) {
+					row=str1[3].charAt(0);
+					col=str1[3].charAt(2);
+					seats[row-65][col-49]=false;   //예약파일(reservation.txt에서 배열 다시 만들 필요없이 배열의 해당항목만 변경 
 					continue;  // 삭제할 번호와 일치하면 루프를 계속 돈다.
 				}
 				
@@ -281,7 +283,7 @@ class ReservCancel extends ReservList implements KeyboardIn
 				//System.out.println(alRes.get(i));
 			}
 			System.out.println("예매를 취소하였습니다!");
-			Seats ss = new Seats();   // 예약 파일(reservations.txt)에서 삭제한 좌석 내용을 Seats배열에 반영.
+			//Seats ss = new Seats();   // 예약 파일(reservations.txt)에서 삭제한 좌석 내용을 Seats배열에 반영.
 		}
 		else {
 			System.out.println("예매 취소에 실패하였습니다.");
