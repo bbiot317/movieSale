@@ -16,22 +16,17 @@ public class MainApp implements KeyboardIn {
 		ss.SeatList(false);
 		
 		//Scanner sc = new Scanner(System.in);   // KeyboardIn interface에서 구현
-		System.out.println("관리자라면 비밀번호(1234)를 입력하세요:");
-		int pw = SC.nextInt();
-		SC.nextLine();  // 입력 버퍼 비우기 위함
+		
 		//sa= sc.next();      // 빈칸 만나면 이전 내용만 수용, 이후 내용은 다음 입력으로 넘어감. nextLine()으로 보완 필요
 		//sb=sc.nextLine();  // 빈칸 포함 문자열 입력 수용. nextLine()만 온전하게 입력 마감됨. 다른 Scanner들은 불완전한 입력 마감.
 		//ia=sc.nextInt();    // nextInt() 다음에 nextLine() 보완해야 다음 입력 오류 발생하지 않음
 		//ba=sc.nextByte();   // nextByte() 다음에 nextLine() 보완해야 다음 입력 오류 발생하지 않음
-		if (pw==1234) {
-			System.out.println("관리자 로그인 성공!");
-			AdminMenu am = new AdminMenu();
-			am.AdminMenuProcess();
-		}
-		else {   // 관리자가 아니라면 일반 이용자로 간주
-			System.out.println("영화 예매 사이트 입장합니다.");
-			Reservation res = new Reservation();
-		}
+
+		System.out.println("영화 예매 사이트 입장합니다.");
+		ReservMain rm = new ReservMain();
+		rm.ReservMenu();
+		
+		
 		//sc.close();
 	}
 
