@@ -22,7 +22,7 @@ public class MainApp implements KeyboardIn {
 		//ia=sc.nextInt();    // nextInt() 다음에 nextLine() 보완해야 다음 입력 오류 발생하지 않음
 		//ba=sc.nextByte();   // nextByte() 다음에 nextLine() 보완해야 다음 입력 오류 발생하지 않음
 
-		System.out.println("영화 예매 사이트 입장합니다.");
+		System.out.println("영화 예매 사이트 aa합니다.");
 		ReservMain rm = new ReservMain();
 		rm.ReservMenu();
 		
