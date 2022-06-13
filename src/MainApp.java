@@ -11,12 +11,15 @@ public class MainApp implements KeyboardIn {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		
+
 		Seats ss = new Seats();  // 좌석 배열
-		ss.SeatList(false);		
+
+		ss.SeatList(false);	
 		
 		//Scanner sc = new Scanner(System.in);   // KeyboardIn interface에서 구현
 		while(true) {
+			if(exit[0]==true)
+				break;
 			System.out.println("관리자라면 비밀번호(1234)를, 일반 이용자라면 1이외의 숫자를 입력하세요:");
 			int pw = SC.nextInt();
 			SC.nextLine();  // 입력 버퍼 비우기 위함
@@ -35,6 +38,7 @@ public class MainApp implements KeyboardIn {
 				System.out.println("영화 예매 사이트 입장합니다.");
 				Reservation res = new Reservation();
 			}
+
 		}
 		//sa= sc.next();      // 빈칸 만나면 이전 내용만 수용, 이후 내용은 다음 입력으로 넘어감. nextLine()으로 보완 필요
 		//sb=sc.nextLine();  // 빈칸 포함 문자열 입력 수용. nextLine()만 온전하게 입력 마감됨. 다른 Scanner들은 불완전한 입력 마감.
@@ -52,6 +56,7 @@ interface KeyboardIn
 	Scanner SC = new Scanner(System.in);
 	boolean[][] seats = new boolean[8][6];  // 좌석 정보는 모두 여기에
 	boolean[] admin = new boolean[1];
+	static public boolean[] exit=new boolean[1];
 }
 
 class Seats implements KeyboardIn
@@ -121,11 +126,12 @@ class FileWrite
 class AdminMenu extends MovieList implements KeyboardIn
 {
 	private int menu;
-	private boolean exit=false;
 	//Scanner sc = new Scanner(System.in);
 	
 	public void AdminMenuProcess() throws IOException
 	{
+		if (exit[0]==true) 
+			return;
 		System.out.println("=====================================");
 		System.out.println("==========영화 정보 관리자 메뉴===========");
 		System.out.println("=====================================");
@@ -135,7 +141,7 @@ class AdminMenu extends MovieList implements KeyboardIn
 			//printAdminMenu(sc);   // Scanner sc 대입할 경우
 			printAdminMenu();
 			adminMenuExec();
-			if (exit == true)
+			if (exit[0] == true)
 			{
 				break;
 			}
@@ -145,7 +151,7 @@ class AdminMenu extends MovieList implements KeyboardIn
 	
 	public void printAdminMenu()   // (Scanner sc) 대입할 경우
 	{
-		System.out.println("관리 항목을 선택하세요. 1.영화 등록 2.영화 조회 3.영화 삭제 4.예매 목록 5.종료");
+		System.out.println("관리 항목을 선택하세요. 1.영화 등록 2.영화 조회 3.영화 삭제 4.예매 목록 5. 영화 예메 6.종료");
 		menu = SC.nextInt();
 		SC.nextLine();  // 입력 버퍼 비우기 위함
 	}
@@ -163,13 +169,17 @@ class AdminMenu extends MovieList implements KeyboardIn
 			break;
 		case 3:    // 영화 삭제
 			MovieDelete();
+
 			break;
 		case 4:
 			ReserveList();
 			break;
-		case 5:    // 프로그램 종료
+		case 5:
+			Reservation res = new Reservation();
+			break;
+		case 6:    // 프로그램 종료
 			System.out.println("관리 프로그램을 종료합니다.");
-			exit= true;
+			exit[0]= true;
 			break;
 		default:
 			System.out.println("항목을 잘못 선택했습니다.");
