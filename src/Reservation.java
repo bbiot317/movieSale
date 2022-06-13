@@ -12,8 +12,6 @@ public class Reservation
 	public Reservation() throws IOException {
 	// TODO Auto-generated constructor stub
 		System.out.println("영화 예약 사이트입니다");
-		System.out.println("613");
-		System.out.println("");
 		ReservMain rm = new ReservMain();
 		rm.ReservMenu();
 	}
@@ -26,7 +24,6 @@ class ReservMain extends ReservList implements KeyboardIn
 	
 	public void ReservMenu() throws IOException
 	{
-		System.out.println(exit[0]);
 		if(exit[0]==true)
 			return;
 		System.out.println("=====================================");
@@ -58,6 +55,7 @@ class ReservMain extends ReservList implements KeyboardIn
 		switch(menu)
 		{
 		case 1:    // 영화 예매
+			System.out.println("예매 프로그램에 들어옸습니다.");
 			ReservMovie rm = new ReservMovie();
 			break;
 		case 2:    // 예매 확인
@@ -110,7 +108,6 @@ class ReservMovie extends MovieList implements KeyboardIn
 	public ReservMovie() throws IOException {
 	// TODO Auto-generated constructor stub
 		String[] str1;
-		System.out.println("예매 프로그램에 들어옸습니다.");
 		
 		MovieList();		
 		
@@ -288,7 +285,7 @@ class ReservCancel extends ReservList implements KeyboardIn
 		
 		if (super.isRcheck()==true) {
 			file.delete();   // 기존 파일 삭제하고
-			//file.createNewFile();  // 동일한 파일명으로 다시 만든다.
+			file.createNewFile();  // 동일한 파일명으로 다시 만든다.
 			ReservFileWrite rfw = new ReservFileWrite();
 			for (int i=0; i<alRes.size(); i++) {
 				str1 = alRes.get(i).split(",");
@@ -297,7 +294,7 @@ class ReservCancel extends ReservList implements KeyboardIn
 					col=str1[3].charAt(2);
 					seats[row-65][col-49]=false;   //예약파일(reservation.txt에서 배열 다시 만들 필요없이 배열의 해당항목만 변경 
 					continue;  // 삭제할 번호와 일치하면 루프를 계속 돈다.
-				}Reservation res = new Reservation();
+				}
 				
 				rfw.ReservWriteFile(str1[0], str1[1], str1[2], str1[3]);  // alRes 배열 데이터 저장
 				//System.out.println(alRes.get(i));
@@ -308,6 +305,6 @@ class ReservCancel extends ReservList implements KeyboardIn
 		else {
 			System.out.println("예매 취소에 실패하였습니다.");
 		}
-		ReservList(rcNo);	// 취소한 예매 번호로 예매 내역 다시 확인하기
+		//ReservList(rcNo);	// 취소한 예매 번호로 예매 내역 다시 확인하기
 	}
 }
