@@ -13,6 +13,7 @@ public class MainApp implements KeyboardIn {
 		// TODO Auto-generated method stub
 		
 		Seats ss = new Seats();  // 좌석 배열
+
 		ss.SeatList(false);		
 		
 		//Scanner sc = new Scanner(System.in);   // KeyboardIn interface에서 구현
@@ -35,6 +36,7 @@ public class MainApp implements KeyboardIn {
 				System.out.println("영화 예매 사이트 입장합니다.");
 				Reservation res = new Reservation();
 			}
+
 		}
 		//sa= sc.next();      // 빈칸 만나면 이전 내용만 수용, 이후 내용은 다음 입력으로 넘어감. nextLine()으로 보완 필요
 		//sb=sc.nextLine();  // 빈칸 포함 문자열 입력 수용. nextLine()만 온전하게 입력 마감됨. 다른 Scanner들은 불완전한 입력 마감.
@@ -163,6 +165,7 @@ class AdminMenu extends MovieList implements KeyboardIn
 			break;
 		case 3:    // 영화 삭제
 			MovieDelete();
+
 			break;
 		case 4:
 			ReserveList();
