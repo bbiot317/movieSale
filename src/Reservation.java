@@ -21,11 +21,13 @@ public class Reservation
 class ReservMain extends ReservList implements KeyboardIn
 {
 	private int menu;
-	private boolean exit=false;
 	//Scanner sc = new Scanner(System.in);
 	
 	public void ReservMenu() throws IOException
 	{
+		System.out.println(exit[0]);
+		if(exit[0]==true)
+			return;
 		System.out.println("=====================================");
 		System.out.println("=========영화 예약/확인/취소 메뉴=========");
 		System.out.println("=====================================");
@@ -35,7 +37,7 @@ class ReservMain extends ReservList implements KeyboardIn
 			//printReservMenu(sc);   // Scanner sc 대입할 경우
 			printReservMenu();
 			reservMenuExec();
-			if (exit == true)
+			if (exit[0] == true)
 			{
 				break;
 			}
@@ -66,20 +68,25 @@ class ReservMain extends ReservList implements KeyboardIn
 			ReservCancel rc = new ReservCancel();
 			break;
 		case 4:
-			System.out.println("관리자라면 비밀번호(1234)를 입력하세요:");
-			int pw = SC.nextInt();
-			SC.nextLine();  // 입력 버퍼 비우기 위함
-			if (pw==1234) {
-				System.out.println("관리자 로그인 성공!");
+			if (admin[0]==true)
+			{
 				AdminMenu am = new AdminMenu();
 				am.AdminMenuProcess();
-			}else {
-				System.out.println("비밀번호 틀렸습니다.");
 			}
+//			System.out.println("관리자라면 비밀번호(1234)를 입력하세요:");
+//			int pw = SC.nextInt();
+//			SC.nextLine();  // 입력 버퍼 비우기 위함
+//			if (pw==1234) {
+//				System.out.println("관리자 로그인 성공!");
+//				AdminMenu am = new AdminMenu();
+//				am.AdminMenuProcess();
+//			}else {
+//				System.out.println("비밀번호 틀렸습니다.");
+//			}
 			break;
 		case 5:    // 프로그램 종료
 			System.out.println("예매 프로그램을 종료합니다.");
-			exit=true;
+			exit[0]=true;
 			break;
 		default:
 			System.out.println("항목을 잘못 선택했습니다.");
@@ -289,7 +296,7 @@ class ReservCancel extends ReservList implements KeyboardIn
 					col=str1[3].charAt(2);
 					seats[row-65][col-49]=false;   //예약파일(reservation.txt에서 배열 다시 만들 필요없이 배열의 해당항목만 변경 
 					continue;  // 삭제할 번호와 일치하면 루프를 계속 돈다.
-				}
+				}Reservation res = new Reservation();
 				
 				rfw.ReservWriteFile(str1[0], str1[1], str1[2], str1[3]);  // alRes 배열 데이터 저장
 				//System.out.println(alRes.get(i));
