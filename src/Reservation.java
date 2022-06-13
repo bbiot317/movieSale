@@ -17,8 +17,9 @@ public class Reservation
 	}
 }
 
-class ReservMain extends ReservList implements KeyboardIn
+class ReservMain extends ReservList
 {
+	ReservMain() throws IOException{}
 	private int menu;
 	//Scanner sc = new Scanner(System.in);
 	
@@ -45,7 +46,7 @@ class ReservMain extends ReservList implements KeyboardIn
 	
 	public void printReservMenu()   // (Scanner sc) 대입할 경우
 	{
-		System.out.println("이용할 항목을 선택하세요. 1.영화 예매 2.예매 확인 3.예매 취소 4.관리자모드 5.종료");
+		System.out.println("이용할 항목을 선택하세요. 1.영화 예매 2.예매 확인 3.예매 취소 4.예매 변경 5.관리자모드 6.종료");
 		menu = SC.nextInt();
 		SC.nextLine();  // 입력 버퍼 비우기 위함
 	}
@@ -55,8 +56,8 @@ class ReservMain extends ReservList implements KeyboardIn
 		switch(menu)
 		{
 		case 1:    // 영화 예매
-			System.out.println("예매 프로그램에 들어옸습니다.");
 			ReservMovie rm = new ReservMovie();
+			rm.ReserveMovie();
 			break;
 		case 2:    // 예매 확인
 			System.out.println("확인할 예매번호를 입력하세요.");
@@ -67,6 +68,8 @@ class ReservMain extends ReservList implements KeyboardIn
 			ReservCancel rc = new ReservCancel();
 			break;
 		case 4:
+			ReservModify(); // 예매 번호는 그대로 나머지만 변경
+		case 5:
 			if (admin[0]==true)
 			{
 				AdminMenu am = new AdminMenu();
@@ -83,7 +86,7 @@ class ReservMain extends ReservList implements KeyboardIn
 //				System.out.println("비밀번호 틀렸습니다.");
 //			}
 			break;
-		case 5:    // 프로그램 종료
+		case 6:    // 프로그램 종료
 			System.out.println("예매 프로그램을 종료합니다.");
 			exit[0]=true;
 			break;
@@ -105,8 +108,10 @@ class ReservMovie extends MovieList implements KeyboardIn
 	String timeStamp;  // 영화 예매 고유번호
 	//Seats ss = new Seats();
 	
-	public ReservMovie() throws IOException {
+	public void ReserveMovie() throws IOException {
 	// TODO Auto-generated constructor stub
+
+		System.out.println("예매 프로그램에 들어옸습니다.");
 		String[] str1;
 		
 		MovieList();		
@@ -208,7 +213,7 @@ class ReservFileWrite
 	}
 }
 
-class ReservList
+class ReservList extends ReservMovie implements KeyboardIn
 {
 	protected String reservName="src/reservations.txt";
 	protected int no;
@@ -261,6 +266,138 @@ class ReservList
 		
 		br.close();   // 파일 닫기	
 	}
+	
+	void ReservModify() throws IOException { // 예매 변경 메소드
+		System.out.print("변경할 예매번호를 입력하세요 : ");
+		String rvNo=SC.nextLine();
+		ReservList(rvNo); // 우선 예매확인 실행
+		if( Rcheck ) {  // Rcheck가 true일때
+			System.out.println("무엇을 변경하시겠습니까? 1.영화변경 2. 좌석변경");
+			int select = SC.nextInt();SC.nextLine();
+			switch(select) {
+			case 1: // 우선 영화예매 실행
+				String[] str1;
+				
+				MovieList();		
+				System.out.println("예매할 영화 번호를 입력하세요:");
+				selNo = SC.nextInt();
+				SC.nextLine();  // 입력 버퍼 비우기 위함. nextInt에서 남은 엔터 값을 해소.
+				if (selNo<1 || selNo>super.no) {
+					System.out.println("예매할 영화 번호를 잘못 입력했습니다.");
+					return;
+				}
+				selNo=selNo - 1;
+				// 좌석 배치도 및 선택 루틴 설정
+				String seat;
+				while(true) {
+					System.out.println("스크린 좌석 배치도");
+					for (int i=0; i<seats.length;i++) {
+						for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
+							seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
+							if (seats[i][k]==true) {
+								System.out.print(" X \t");
+							}
+							else {
+								System.out.print(seat+"\t");
+							}
+				
+						}
+						System.out.println();
+					}
+					System.out.print("예매할 좌석 번호를 입력하세요:");
+					seatNo = SC.nextLine().toUpperCase();  // 입력받은 좌석번호의 대문자 변환
+					if (seatNo.length() != 3 || seatNo.charAt(1) != '-') {
+						System.out.println("좌석번호를 잘못 선택했습니다.\n엔터키를 치세요.");
+						SC.nextLine();   // 잠시 멈춤.
+						continue;
+					}
+					seatF=seatNo.charAt(0);
+					seatL=seatNo.charAt(2);
+					if (seatF<'A' || seatF>'H' || seatL<'1' || seatL>'6') {
+						System.out.println("열과 행의 번호가 잘못되었습니다.\n엔터키를 치세요.");
+						SC.nextLine();   // 잠시 멈춤.
+						continue;
+					}
+					if (seats[seatF-65][seatL-49]==true) {
+						System.out.println("이미 예약된 좌석입니다.\n엔터키를 치세요.");
+						SC.nextLine();   // 잠시 멈춤.
+						continue;
+					}
+					else {
+						break;
+					}
+				}
+				str1 = al.get(selNo).split(",");
+				selStamp=str1[0];
+				selTitle=str1[1];
+				BufferedWriter bw = new BufferedWriter(new FileWriter(file)); // 덮어쓰기 모드
+				for(String i : alRes ){
+					if( i.split(",")[0].equals(rvNo) ) { // 예매목록(alRes) 읽던중 현재예매번호(rvNo)와 같으면
+						bw.write(rvNo+","+selStamp+","+selTitle+","+seatNo+"\n");//예매번호는 그대로, 나머지 변경
+						bw.flush();
+						System.out.println("영화가 변경되었습니다 \n 영화제목: "+selTitle+", 좌석번호: "+seatNo);
+						continue;
+					}
+					bw.write(i+"\n");
+					bw.flush();
+				}
+				break;
+				
+			case 2: //좌석 변경
+				while(true) {
+					System.out.println("스크린 좌석 배치도");
+					for (int i=0; i<seats.length;i++) {
+						for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
+							seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
+							if (seats[i][k]==true) {
+								System.out.print(" X \t");
+							}
+							else {
+								System.out.print(seat+"\t");
+							}
+				
+						}
+						System.out.println();
+					}
+					System.out.print("바꿀 좌석 번호를 입력하세요:");
+					seatNo = SC.nextLine().toUpperCase();  // 입력받은 좌석번호의 대문자 변환
+					if (seatNo.length() != 3 || seatNo.charAt(1) != '-') {
+						System.out.println("좌석번호를 잘못 선택했습니다.\n엔터키를 치세요.");
+						SC.nextLine();   // 잠시 멈춤.
+						continue;
+					}
+					seatF=seatNo.charAt(0);
+					seatL=seatNo.charAt(2);
+					if (seatF<'A' || seatF>'H' || seatL<'1' || seatL>'6') {
+						System.out.println("열과 행의 번호가 잘못되었습니다.\n엔터키를 치세요.");
+						SC.nextLine();   // 잠시 멈춤.
+						continue;
+					}
+					if (seats[seatF-65][seatL-49]==true) {
+						System.out.println("이미 예약된 좌석입니다.\n엔터키를 치세요.");
+						SC.nextLine();   // 잠시 멈춤.
+						continue;
+					}
+					else {
+						break;
+					}
+				}
+				BufferedWriter bw2 = new BufferedWriter(new FileWriter(file)); // 덮어쓰기 모드
+				for(String i : alRes ){
+					String[] j = i.split(",");
+					if( j[0].equals(rvNo) ) { // 예매목록(alRes) 읽던중 현재예매번호(rvNo)와 같으면
+						bw2.write(rvNo+","+j[1]+","+j[2]+","+seatNo+"\n");//예매번호는 그대로, 좌석 변경
+						bw2.flush();
+						System.out.println("좌석이 변경되었습니다. 좌석번호: "+seatNo);
+						continue;
+					}
+					bw2.write(i+"\n");
+					bw2.flush();
+				}
+				break;
+			}
+		}
+	}
 
 	public boolean isRcheck() {
 		return Rcheck;
@@ -271,7 +408,7 @@ class ReservList
 	}
 }
 
-class ReservCancel extends ReservList implements KeyboardIn
+class ReservCancel extends ReservList
 {
 	int row, col;
 	
