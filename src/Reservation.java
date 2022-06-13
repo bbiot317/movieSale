@@ -45,7 +45,7 @@ class ReservMain extends ReservList implements KeyboardIn
 	
 	public void printReservMenu()   // (Scanner sc) 대입할 경우
 	{
-		System.out.println("이용할 항목을 선택하세요. 1.영화 예매 2.예매 확인 3.예매 취소 4.관리자모드 5.종료");
+		System.out.println("이용할 항목을 선택하세요. 1.영화 예매 2.예매 확인 3.예매 취소 5.종료");
 		menu = SC.nextInt();
 		SC.nextLine();  // 입력 버퍼 비우기 위함
 	}
@@ -64,18 +64,6 @@ class ReservMain extends ReservList implements KeyboardIn
 			break;
 		case 3:    // 예매 취소
 			ReservCancel rc = new ReservCancel();
-			break;
-		case 4:
-			System.out.println("관리자라면 비밀번호(1234)를 입력하세요:");
-			int pw = SC.nextInt();
-			SC.nextLine();  // 입력 버퍼 비우기 위함
-			if (pw==1234) {
-				System.out.println("관리자 로그인 성공!");
-				AdminMenu am = new AdminMenu();
-				am.AdminMenuProcess();
-			}else {
-				System.out.println("비밀번호 틀렸습니다.");
-			}
 			break;
 		case 5:    // 프로그램 종료
 			System.out.println("예매 프로그램을 종료합니다.");
