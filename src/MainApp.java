@@ -129,7 +129,7 @@ class AdminMenu extends MovieList implements KeyboardIn
 	
 	public void printAdminMenu()   // (Scanner sc) 대입할 경우
 	{
-		System.out.println("관리 항목을 선택하세요. 1.영화 등록 2.영화 조회 3.영화 삭제 5.종료");
+		System.out.println("관리 항목을 선택하세요. 1.영화 등록 2.영화 조회 3.영화 삭제 4.예매 목록 5.종료");
 		menu = SC.nextInt();
 		SC.nextLine();  // 입력 버퍼 비우기 위함
 	}
@@ -147,6 +147,9 @@ class AdminMenu extends MovieList implements KeyboardIn
 			break;
 		case 3:    // 영화 삭제
 			MovieDelete();
+			break;
+		case 4:
+			ReserveList();
 			break;
 		case 5:    // 프로그램 종료
 			System.out.println("관리 프로그램을 종료합니다.");
@@ -207,8 +210,35 @@ class AdminMenu extends MovieList implements KeyboardIn
 		
 		MovieList();
 	}
+	
+	void ReserveList() throws IOException
+	{
+		// 이하 전체 예매 목록 보기
+		File file = new File("src/reservations.txt");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String str;
+		String[] str1;
+		int no=0;
+		System.out.println("전체 예매 목록 보기");
+		while( (str=br.readLine() )!= null)
+		{
+			str1=str.split(",");
+			no++;
+			System.out.println("["+no+"] 예매번호: "+str1[0]+", 영화번호: "+str1[1]+", "+"제목: "+str1[2]+", 좌석번호: "+str1[3]);
+		}
+		br.close();
+//		for (String s: alRes)     // ArrayList a1Res에 저장한 예매 데이터 출력
+//		{
+//			str1=s.split(",");
+//			no++;
+//			System.out.println("["+no+"] 예매번호: "+str1[0]+", 영화번호: "+str1[1]+", "+"제목: "+str1[2]+", 좌석번호: "+str1[3]);
+//		}
+		// 이상 전체 예매 목록 보기
+	}
 
 }   // class AdminMenu
+
+
 
 class MovieList
 {
