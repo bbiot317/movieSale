@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,9 +13,8 @@ public class MainApp implements KeyboardIn {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 
-		Seats ss = new Seats();  // 좌석 배열
-
-		ss.SeatList(false);	
+//		Seats ss = new Seats();  // 좌석 배열
+//		ss.SeatList(false);	
 		
 		//Scanner sc = new Scanner(System.in);   // KeyboardIn interface에서 구현
 		while(true) {
@@ -54,55 +54,94 @@ public class MainApp implements KeyboardIn {
 interface KeyboardIn
 {
 	Scanner SC = new Scanner(System.in);
-	boolean[][] seats = new boolean[8][6];  // 좌석 정보는 모두 여기에
+	//boolean[][] seats = new boolean[8][6];  // 좌석 정보는 모두 여기에  ::모든영화의 좌석이 합쳐져서 출력되어서 사용불가, 지워주세요
 	boolean[] admin = new boolean[1];
 	static public boolean[] exit=new boolean[1];
 }
 
 class Seats implements KeyboardIn
 {
-	protected String reservName="src/reservations.txt";
-	protected File file;
+	protected File file = new File("src/reservations.txt");
 	protected boolean view;
-
-	public void SeatList(boolean view) throws IOException
+	boolean[][] seat = new boolean[8][6];
+	ArrayList<String> reslist = new ArrayList<String>();
+	
+	Seats(String movie_number) throws IOException 
 	{
+		BufferedReader br= new BufferedReader(new FileReader(file));
 		String str;
 		String[] str1;
 		int row, col;
-		file = new File(reservName);
-		if (!file.exists()) {
-			System.out.println("예매 파일이 존재하지 않습니다.");
-			return;
-		}	
-		BufferedReader br = new BufferedReader(new FileReader(file));
-
-		while ((str=br.readLine()) != null) {
-			str1 = str.split(",");
-			row=str1[3].charAt(0);   // 예약 파일의 좌석번호(예: D-3)에서 D 추출
-			col=str1[3].charAt(2);	 // 예약 파일의 좌석번호(예: D-3)에서 3 추출
-			seats[row-65][col-49]=true;   // 'A'는 65이므로 65를 빼서 0으로 행값 입력, "1"은 49이므로 49를 빼서 0으로 열값 입력
+		while( (str=br.readLine()) != null ) {
+			if( str.split(",")[1].equals(movie_number) ) { 
+				str1 = str.split(",");
+				row=str1[3].charAt(0);   // 예약 파일의 좌석번호(예: D-3)에서 D 추출
+				col=str1[3].charAt(2);	 // 예약 파일의 좌석번호(예: D-3)에서 3 추출
+				seat[row-65][col-49]=true;   // 'A'는 65이므로 65를 빼서 0으로 행값 입력, "1"은 49이므로 49를 빼서 0으로 열값 입력
+			}
 		}
 		br.close();   // 파일 닫기
-		
-		if (view==true) {  // 호출 시 true값이면 좌석 배치 현황 출력
-			String seat;
-			for (int i=0; i<seats.length;i++) {
-				for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
-					seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
-					if (seats[i][k]==true) {
-						System.out.print(" X \t");
-					}
-					else {
-						System.out.print(seat+"\t");
-					}
-		
-				}
-				System.out.println();
+		for (int i=0; i<seat.length;i++) {			//좌석 배치 현황 출력
+		for (int k=0; k<seat[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
+			str=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
+			if (seat[i][k]==true) {
+				System.out.print(" X \t");
 			}
-		}  // view=true일 때
+			else {
+				System.out.print(str+"\t");
+			}
+
+		}
+		System.out.println();
+	}
 	}
 }
+
+
+//class Seats implements KeyboardIn //:: 모든영화의 좌석들이 같이 합쳐져서 출력되어서 사용불가해서 새로 만듦, 지워주세요
+//{
+//	protected String reservName="src/reservations.txt";
+//	protected File file = new File(reservName);
+//	protected boolean view;
+//
+//	public void SeatList(boolean view) throws IOException //모든 영화의 좌석이 합쳐져서 출력됨
+//	{
+//		String str;
+//		String[] str1;
+//		int row, col;
+//		file = new File(reservName);
+//		if (!file.exists()) {
+//			System.out.println("예매 파일이 존재하지 않습니다.");
+//			return;
+//		}	
+//		BufferedReader br = new BufferedReader(new FileReader(file));
+//
+//		while ((str=br.readLine()) != null) {
+//			str1 = str.split(",");
+//			row=str1[3].charAt(0);   // 예약 파일의 좌석번호(예: D-3)에서 D 추출
+//			col=str1[3].charAt(2);	 // 예약 파일의 좌석번호(예: D-3)에서 3 추출
+//			seats[row-65][col-49]=true;   // 'A'는 65이므로 65를 빼서 0으로 행값 입력, "1"은 49이므로 49를 빼서 0으로 열값 입력
+//		}
+//		br.close();   // 파일 닫기
+//		
+//		if (view==true) {  // 호출 시 true값이면 좌석 배치 현황 출력
+//			String seat;
+//			for (int i=0; i<seats.length;i++) {
+//				for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
+//					seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
+//					if (seats[i][k]==true) {
+//						System.out.print(" X \t");
+//					}
+//					else {
+//						System.out.print(seat+"\t");
+//					}
+//		
+//				}
+//				System.out.println();
+//			}
+//		}  // view=true일 때
+//	}
+//}
 
 class FileWrite
 {

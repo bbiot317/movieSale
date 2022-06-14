@@ -125,30 +125,10 @@ class ReservMovie extends MovieList implements KeyboardIn
 		}
 		selNo=selNo - 1;
 		// 좌석 배치도 및 선택 루틴 설정
-		String seat;
 		while(true) {
 			System.out.println("스크린 좌석 배치도");
-//			System.out.println("A-1   A-2   A-3   A-4   A-5   A-6");
-//			System.out.println("B-1   B-2   B-3   B-4   B-5   B-6");
-//			System.out.println("C-1   C-2   C-3   C-4   C-5   C-6");
-//			System.out.println("D-1   D-2   D-3   D-4   D-5   D-6");
-//			System.out.println("E-1   E-2   E-3   E-4   E-5   E-6");
-//			System.out.println("F-1   F-2   F-3   F-4   F-5   F-6");
-//			System.out.println("G-1   G-2   G-3   G-4   G-5   G-6");
-//			System.out.println("H-1   H-2   H-3   H-4   H-5   H-6");
-			for (int i=0; i<seats.length;i++) {
-				for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
-					seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
-					if (seats[i][k]==true) {
-						System.out.print(" X \t");
-					}
-					else {
-						System.out.print(seat+"\t");
-					}
-		
-				}
-				System.out.println();
-			}
+			Seats seats = new Seats(al.get(selNo).split(",")[0]); //선택한 영화번호(selNo)를 Seats의 생성자에 넣어서 해당 영화번호의 좌석들 출력
+			
 			System.out.print("예매할 좌석 번호를 입력하세요:");
 			seatNo = SC.nextLine().toUpperCase();  // 입력받은 좌석번호의 대문자 변환
 			if (seatNo.length() != 3 || seatNo.charAt(1) != '-') {
@@ -163,7 +143,7 @@ class ReservMovie extends MovieList implements KeyboardIn
 				SC.nextLine();   // 잠시 멈춤.
 				continue;
 			}
-			if (seats[seatF-65][seatL-49]==true) {
+			if (seats.seat[seatF-65][seatL-49]==true) {
 				System.out.println("이미 예약된 좌석입니다.\n엔터키를 치세요.");
 				SC.nextLine();   // 잠시 멈춤.
 				continue;
@@ -185,10 +165,10 @@ class ReservMovie extends MovieList implements KeyboardIn
 		System.out.println();
 		
 		// 이하, 예약 좌석을 Seats 배열에 반영하기 위함. 영화 예약을 반복할 경우, 최근 변경 사항 즉시 반영.  
-		int row, col;
-		row=seatNo.charAt(0);
-		col=seatNo.charAt(2);
-		seats[row-65][col-49]=true;   //아래 명령줄 대체. 예약파일(reservation.txt에서 배열 다시 만들 필요없이 배열의 해당항목만 변경 
+//		int row, col;
+//		row=seatNo.charAt(0);
+//		col=seatNo.charAt(2);
+//		seats.seat[row-65][col-49]=true;   //아래 명령줄 대체. 예약파일(reservation.txt에서 배열 다시 만들 필요없이 배열의 해당항목만 변경 
 		//ss.SeatList(false);    // 예약 파일(reservations.txt)에 새로 저장된 예약 좌석을 Seats배열에 반영.(이것 대신 사용해도 됨)
 		// 이상, 예약 좌석을 Seats 배열에 반영하기 위함.
 	}
@@ -279,11 +259,11 @@ class ReservList extends ReservMovie implements KeyboardIn
 				String[] str1;
 				
 				MovieList();		
-				System.out.println("예매할 영화 번호를 입력하세요:");
+				System.out.println("변경할 영화 번호를 입력하세요:");
 				selNo = SC.nextInt();
 				SC.nextLine();  // 입력 버퍼 비우기 위함. nextInt에서 남은 엔터 값을 해소.
 				if (selNo<1 || selNo>super.no) {
-					System.out.println("예매할 영화 번호를 잘못 입력했습니다.");
+					System.out.println("변경할 영화 번호를 잘못 입력했습니다.");
 					return;
 				}
 				selNo=selNo - 1;
@@ -291,19 +271,8 @@ class ReservList extends ReservMovie implements KeyboardIn
 				String seat;
 				while(true) {
 					System.out.println("스크린 좌석 배치도");
-					for (int i=0; i<seats.length;i++) {
-						for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
-							seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
-							if (seats[i][k]==true) {
-								System.out.print(" X \t");
-							}
-							else {
-								System.out.print(seat+"\t");
-							}
-				
-						}
-						System.out.println();
-					}
+					Seats seats = new Seats(al.get(selNo).split(",")[0]); //선택한 영화번호(selNo)를 Seats의 생성자에 넣어서 해당 영화번호의 좌석들 출력
+
 					System.out.print("예매할 좌석 번호를 입력하세요:");
 					seatNo = SC.nextLine().toUpperCase();  // 입력받은 좌석번호의 대문자 변환
 					if (seatNo.length() != 3 || seatNo.charAt(1) != '-') {
@@ -318,7 +287,7 @@ class ReservList extends ReservMovie implements KeyboardIn
 						SC.nextLine();   // 잠시 멈춤.
 						continue;
 					}
-					if (seats[seatF-65][seatL-49]==true) {
+					if (seats.seat[seatF-65][seatL-49]==true) {
 						System.out.println("이미 예약된 좌석입니다.\n엔터키를 치세요.");
 						SC.nextLine();   // 잠시 멈춤.
 						continue;
@@ -345,21 +314,19 @@ class ReservList extends ReservMovie implements KeyboardIn
 				
 			case 2: //좌석 변경
 				while(true) {
-					System.out.println("스크린 좌석 배치도");
-					for (int i=0; i<seats.length;i++) {
-						for (int k=0; k<seats[0].length;k++) {     // seats.length: 행의 길이, seats[0].length: 열의 길이
-							seat=(char)(i+65)+"-"+(k+1);           // A:65, H: 72
-							if (seats[i][k]==true) {
-								System.out.print(" X \t");
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String str;
+					while( (str=br.readLine()) !=null ) {
+						if(str.split(",")[0].equals(rvNo)) {  // 예매목록들중 처음부분이 예매번호와 일치하면
+							str= str.split(",")[1];
+							break;
 							}
-							else {
-								System.out.print(seat+"\t");
-							}
-				
-						}
-						System.out.println();
 					}
-					System.out.print("바꿀 좌석 번호를 입력하세요:");
+					System.out.println("스크린 좌석 배치도");
+
+					Seats seats = new Seats(str); //선택한 영화번호(selNo)를 Seats의 생성자에 넣어서 해당 영화번호의 좌석들 출력
+					
+					System.out.print("변경할 좌석 번호를 입력하세요:");
 					seatNo = SC.nextLine().toUpperCase();  // 입력받은 좌석번호의 대문자 변환
 					if (seatNo.length() != 3 || seatNo.charAt(1) != '-') {
 						System.out.println("좌석번호를 잘못 선택했습니다.\n엔터키를 치세요.");
@@ -373,7 +340,7 @@ class ReservList extends ReservMovie implements KeyboardIn
 						SC.nextLine();   // 잠시 멈춤.
 						continue;
 					}
-					if (seats[seatF-65][seatL-49]==true) {
+					if (seats.seat[seatF-65][seatL-49]==true) {
 						System.out.println("이미 예약된 좌석입니다.\n엔터키를 치세요.");
 						SC.nextLine();   // 잠시 멈춤.
 						continue;
@@ -429,7 +396,6 @@ class ReservCancel extends ReservList
 				if (str1[0].equals(rcNo)==true) {
 					row=str1[3].charAt(0);
 					col=str1[3].charAt(2);
-					seats[row-65][col-49]=false;   //예약파일(reservation.txt에서 배열 다시 만들 필요없이 배열의 해당항목만 변경 
 					continue;  // 삭제할 번호와 일치하면 루프를 계속 돈다.
 				}
 				
