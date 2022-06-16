@@ -69,6 +69,7 @@ class ReservMain extends ReservList
 			break;
 		case 4:
 			ReservModify(); // 예매 번호는 그대로 나머지만 변경
+			break;
 		case 5:
 			if (admin[0]==true)
 			{
